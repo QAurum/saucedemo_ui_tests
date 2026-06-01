@@ -11,13 +11,3 @@ from webdriver_manager.chrome import ChromeDriverManager
 #chrome_options.add_argument('--headless') # позволяет запускать тесты в фоне без графического интерфейса. Это ускоряет парсинг сайтов и автоматизацию тестирования на серверах, экономя ресурсы.
 # options.add_argument("--window-position=-2400,-2400") #для использования на версии хрома 29,30. Так как в селениуме открывается просто пустое окно, если хедлесс не указать без второй строчки
 
-@pytest.fixture
-def driver():
-    # Автоматически скачает драйвер Chrome и запустит браузер
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service)
-    driver.implicitly_wait(10)
-    yield driver
-    driver.quit()
-
-

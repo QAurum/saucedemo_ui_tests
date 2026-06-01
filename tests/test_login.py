@@ -34,9 +34,3 @@ def test_login_negative(driver, username, password, expected_message):
     login_page.login(username, username)
     error = WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR,'[data-test="error"]')))
     assert expected_message in error.text
-    
-# Тесты на страницу товаров (добавление в корзину, удаление, сортировка).
-
-# Тесты на корзину (оформление заказа, проверка суммы).
-
-# Вынести общие части в conftest.py (например, фикстуру logged_in_driver, которая уже залогинена).
