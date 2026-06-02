@@ -1,40 +1,36 @@
 import pytest
+from selenium.webdriver.common.by import By
 from pages.products_page import ProductsPage
 
+# Список товаров для тестирования
+PRODUCTS = [
+    "Sauce Labs Backpack",
+    "Sauce Labs Bike Light",
+    "Sauce Labs Bolt T-Shirt"
+]
+
 #--- POSITIVE ---
-def test_add_product_to_card(logged_in_driver): # logged_in_driver - фикстура логина
+
+@pytest.mark.parametrize("product_name", PRODUCTS)
+def test_add_product_to_cart(logged_in_driver, product_name): # logged_in_driver - после логина эта фикстура логина возвращает драйвер с открытой страницей инвентаря
     driver = logged_in_driver
     products_page = ProductsPage(driver)
-    # после логина мы уже находимся на странице товаров, поэтому не нужно открывать её заново. Фикстура logged_in_driver уже возвращает драйвер с открытой страницей инвентаря
-    # Добавляем товар "Sauce Labs Backpack"
-    products_page.add_to_card('add-to-cart-sauce-labs-backpack')
+    products_page.add_to_cart(product_name)
     
-    # Пауза для визуальной проверки
-    import time
-    time.sleep(2)
+    assert products_page.get_cart_badge_count() >= 1
+    assert products_page.get_button_text(product_name) == 'Remove'
     
-    # Распечатаем HTML, чтобы увидеть, есть ли badge
-    print(driver.page_source[:1000])
+    #print(driver.page_source[:1000])  #Первые 1000 символов HTML-кода текущей страницы в виде одной огромной строки для отладки
+
+@pytest.mark.parametrize("product_name", PRODUCTS)
+def test_remove_product_from_cart(logged_in_driver, product_name):
+    driver = logged_in_driver
+    products_page = ProductsPage(driver)
+    products_page.add_to_cart(product_name)
+    # Проверим, что кнопка стала "Remove"
+    assert products_page.get_button_text(product_name) == 'Remove'
     
-    # Проверяем, что значок корзины показывает 1
-    assert products_page.get_cart_badge_count() == 1
-    
-
-
-
-
-
-# проверка наличия товаров на экране, проверка информации и фото/заглушки на карточке товара, удаление, сортировка. Добавление нескольких товаров - вопрос по кнопкам добавления/удаления, они разные, а обычно - одинаковые
-#Удаление товара из корзины – похожий тест, только кликнуть по кнопке remove и проверить, что значок исчез (или стал 0).
-
-#Переход в корзину и проверка содержимого – нажать на иконку корзины, убедиться, что открылась страница cart.html, и что добавленный товар там есть.
-
-#Сортировка товаров – выбрать сортировку по цене (от низкой к высокой) и проверить, что товары отсортированы.
-
-
-
-
-
-# Тесты на корзину (оформление заказа, проверка суммы).
-
-# Вынести общие части в conftest.py (например, фикстуру logged_in_driver, которая уже залогинена).
+    products_page.remove_from_cart(product_name)
+    # Проверим, что кнопка вернулась в "Add to cart"
+    assert products_page.get_button_text(product_name) == 'Add to cart'
+    assert products_page.get_cart_badge_count() == 0
