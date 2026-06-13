@@ -26,6 +26,7 @@ def driver():
     chrome_options.add_argument("--disable-save-password-bubble")
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver.implicitly_wait(3) # ожидание для подгрузки элементов страницы
     yield driver            # отдаёт driver в тест
     driver.quit()           # после теста закрывает браузер
     

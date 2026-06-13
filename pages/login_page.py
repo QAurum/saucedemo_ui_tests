@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from config import BASE_URL
 
 class LoginPage:
-    def __init__(self, driver):
+    def __init__(self, driver): #нужен, чтобы передать драйвер в экземпляр страницы и сохранить его как атрибут. Действия (методы) не засунуты в __init__, потому что __init__ вызывается при создании объекта, а методы (login, add_to_cart) - это действия, которые происходят после.
         self.driver = driver
         self.username_input = (By.ID, 'user-name')
         self.password_input = (By.ID, 'password')
